@@ -12,6 +12,23 @@ class Category(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+class IngrManager(models.Manager):
+    def validate(self, postData):
+        errors = []
+        if len(postData["name"]) == 0:
+            errors.append("Please enter an ingredient name.")
+        if len(postData["shelflife"]) == 0 or not re.search(r"^\d+$", postData["shelflife"]):
+            errors.append("Please enter an integer for shelf life.")
+
+        if len(errors) > 0:
+            return {"success":False, "error_list":errors}
+        else:
+            if len(postData["suffix"]) == 0:
+                return {"success":True, "ingred_object":Ingredient.objects.create(name=postData["name"],shelflife=postData["shelflife"],qty_suffix="x")}
+            else:
+                return {"success":True, "ingred_object":Ingredient.objects.create(name=postData["name"],shelflife=postData["shelflife"],qty_suffix=postData["suffix"])}
+
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=45)
     categories = models.ManyToManyField(Category, related_name="foods")
@@ -19,7 +36,7 @@ class Ingredient(models.Model):
     qty_suffix = models.CharField(max_length=16)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    objects = IngrManager()
 
 class InvManager(models.Manager):
     def validate(self, postData, user_id):
@@ -55,7 +72,7 @@ class InvManager(models.Manager):
                     shelflife = user_shelf
                 else:
                     shelflife = datetime.now()+timedelta(days=ingr.shelflife)
-                listing = InvListing.objects.create(user_id=user_id, ingr_id=ingr.id, best_by=shelflife, quantity = postData["quantity"])
+                listing = InvListing.objects.create(user_id=User.objects.get(id=user_id), ingr_id=Ingredient.objects.get(id=ingr.id), best_by=shelflife, quantity = postData["quantity"])
                 return {"success":True, "inv_object":listing}
             else:
                 return {"success":False, "error_list":errors}

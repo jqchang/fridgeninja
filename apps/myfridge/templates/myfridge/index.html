@@ -14,23 +14,7 @@
       {%endfor%}
     </ul>
     {%endif%}
-    <table>
-      <thead>
-        <th>Ingredient:</th>
-        <th>Quantity:</th>
-        <th>Days left:</th>
-        <th>Actions:</th>
-      </thead>
-      <tbody>
-        <tr>
-          <td>INGR_NAME</td>
-          <td>INGR_QTY</td>
-          <td>INGR_TIME</td>
-          <td>Edit</td>
-        </tr>
-      </tbody>
-    </table>
-      <form action="{%url 'myfridge:addingr'%}" method='post'>
+    <form action="{%url 'myfridge:addingr'%}" method='post'>
       {%csrf_token%}
       <table>
           <tbody>
@@ -50,6 +34,24 @@
       </table>
       <input type='submit' value='Add'>
     </form>
+    <table>
+      <thead>
+        <th>Ingredient:</th>
+        <th>Quantity:</th>
+        <th>Days left:</th>
+        <th>Actions:</th>
+      </thead>
+      <tbody>
+        {%for ingredient in fridge%}
+        <tr>
+          <td>{{ingredient.ingr_id.name}}</td>
+          <td>{{ingredient.quantity}}</td>
+          <td>{{ingredient.created_at}}</td>
+          <td>Edit</td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
     <ul>
       <li><a href='#'>Edit quantity</a></li>
       <li><a href='#'>Home</a></li>

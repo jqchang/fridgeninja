@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from ..login.models import User
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 # Create your models here.
@@ -24,15 +24,16 @@ class IngrManager(models.Manager):
             return {"success":False, "error_list":errors}
         else:
             if len(postData["suffix"]) == 0:
-                return {"success":True, "ingred_object":Ingredient.objects.create(name=postData["name"],shelflife=postData["shelflife"],qty_suffix="x")}
+                return {"success":True, "ingred_object":Ingredient.objects.create(name=postData["name"],shelflife=postData["shelflife"],qty_suffix="x",temperature=postData["temp"])}
             else:
-                return {"success":True, "ingred_object":Ingredient.objects.create(name=postData["name"],shelflife=postData["shelflife"],qty_suffix=postData["suffix"])}
+                return {"success":True, "ingred_object":Ingredient.objects.create(name=postData["name"],shelflife=postData["shelflife"],qty_suffix=postData["suffix"],temperature=postData["temp"])}
 
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=45)
     categories = models.ManyToManyField(Category, related_name="foods")
     shelflife = models.IntegerField()
+    temperature = models.CharField(max_length=16)
     qty_suffix = models.CharField(max_length=16)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -59,6 +60,8 @@ class InvManager(models.Manager):
             # Valid Date Format -> check future date
             if user_shelf < datetime.now():
                 errors.append("Please enter a future best-by date.")
+        else:
+            user_shelf = None
         if len(errors) > 0:
             return {"success":False, "error_list":errors}
         else:

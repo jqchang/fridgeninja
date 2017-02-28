@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Ingredient Database</title>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <th>Name</th>
+        <th>Shelf life</th>
+        <th>Temperature</th>
+        <th>Actions</th>
+      </thead>
+      <tbody>
+        {%for ingred in inglist%}
+        <tr>
+          <td><a href="{%url 'myfridge:viewingr' ingr_id=ingred.id%}">{{ingred.name}}</td>
+          <td>{{ingred.shelflife}}</td>
+          <td>{{ingred.temperature}}</td>
+          <td><a href="{%url 'myfridge:editingr' ingr_id=ingred.id%}">Edit</a> | Delete</td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+
+  </body>
+</html>

@@ -2,9 +2,43 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>View ingredient</title>
   </head>
   <body>
-
+    <h5>{{ingredient.name}}</h5>
+      <table>
+        <tbody>
+          <tr>
+            <td>Name:</td>
+            <td>{{ingredient.name}}</td>
+          </tr>
+          <tr>
+            <td>Estimated shelf life (days):</td>
+            <td>{{ingredient.shelflife}}</td>
+          </tr>
+          <tr>
+            <td>Storage temperature:</td>
+            <td>
+              {{ingredient.temperature}}
+            </td>
+          </tr>
+          <tr>
+            <td>Qty units (optional):</td>
+            <td>{{ingredient.suffix}}</td>
+          </tr>
+          <tr>
+            <td>Categories:</td>
+            <td>
+              <ul>
+              {%for cat in ingredient.categories.all%}
+                <li>{{cat.name}}</li>
+              {%endfor%}
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <a href="{%url 'myfridge:editingr' ingr_id=ingredient.id%}">Edit</a>
+    </form>
   </body>
 </html>

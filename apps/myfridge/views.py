@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.db.models import DateTimeField, ExpressionWrapper, F
 from django.db import models
 from .models import InvListing, Ingredient, Category
 from ..login.models import User
 from django.contrib import messages
+from django.http import JsonResponse
 
 # Create your views here.
 def index(request):
@@ -11,7 +12,6 @@ def index(request):
         return redirect('/')
     user = User.objects.get(id=request.session['id'])
     fridge = InvListing.objects.filter(user_id=request.session["id"])
-    # .annotate(expires_at=F('created_at') + F('shelflife'), output_field=models.DateTimeField())
     return render(request, 'myfridge/index.html', {"user":user, "fridge":fridge})
 
 def new(request):
@@ -27,9 +27,13 @@ def add(request):
             messages.info(request, msg)
     return redirect('/myfridge')
 
-def edit(request, product_id):
-    messages.info(request, "work in progress")
-    return redirect('/')
+def edit(request, ingr_id):
+    try:
+        ingredient = Ingredient.objects.get(id=ingr_id)
+    except Ingredient.DoesNotExist:
+        messages.info(request, "Ingredient not found!")
+        return redirect('/')
+    return render(request, 'myfridge/update.html', {"ingredient":ingredient})
 
 def create(request):
     if request.method == 'POST':
@@ -43,13 +47,25 @@ def create(request):
     return redirect('/')
 
 def read(request, ingr_id):
+    try:
+        ingredient = Ingredient.objects.get(id=ingr_id)
+    except Ingredient.DoesNotExist:
+        messages.info(request, "Ingredient not found!")
+        return render('/')
+    return render(request, 'myfridge/read.html', {"ingredient":ingredient})
+
+def update(request, ingr_id):
     messages.info(request, 'work in progress')
     return redirect('/')
 
-def update(request, product_id):
+def destroy(request, ingr_id):
     messages.info(request, 'work in progress')
     return redirect('/')
 
-def destroy(request, product_id):
-    messages.info(request, 'work in progress')
-    return redirect('/')
+def ingrdb(request):
+    inglist = Ingredient.objects.all()
+    return render(request, 'myfridge/ingrdb.html', {"inglist":inglist})
+
+def ingrjson(request, ingr_name):
+    ingredient = Ingredient.objects.filter(name__contains=ingr_name).values('id', 'name', 'shelflife', 'categories')
+    return JsonResponse(list(ingredient), safe=False)

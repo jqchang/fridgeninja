@@ -2,9 +2,58 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Edit ingredient</title>
+    {%load staticfiles%}
+    <script src="{%static 'myfridge/css/jquery.min.js'%}"></script>
+    <script type='text/css' defer>
+     $(document).ready(function() {
+       alert("Hello World!")
+     });
+     </script>
   </head>
   <body>
-
+    <h5>{{ingredient.name}}</h5>
+    <form action="{%url 'myfridge:updateingr' ingr_id=ingredient.id%}" method='post'>
+      {%csrf_token%}
+      <table>
+        <tbody>
+          <tr>
+            <td>Name:</td>
+            <td><input type='text' name='name' value='{{ingredient.name}}'></td>
+          </tr>
+          <tr>
+            <td>Estimated shelf life (days):</td>
+            <td><input type='text' name='shelflife' value='{{ingredient.shelflife}}'></td>
+          </tr>
+          <tr>
+            <td>Storage temperature: (current:{{ingredient.temperature}})</td>
+            <td>
+              <input type='radio' name='temp' value='Room temperature'>Room temperature<br>
+              <input type='radio' name='temp' value='Refrigerated'>Refrigerated<br>
+              <input type='radio' name='temp' value='Frozen'>Frozen
+            </td>
+          </tr>
+          <tr>
+            <td>Qty units (optional):</td>
+            <td><input type='text' name='suffix' value='{{ingredient.suffix}}'></td>
+          </tr>
+          <tr>
+            <td>Categories:</td>
+            <td>
+              <ul>
+              {%for cat in ingredient.categories.all%}
+                <li>cat</li>
+              {%endfor%}
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td>Add category:</td>
+            <td><input type='text' name='category'/><input type='button' id='addcat' value='Add'></td>
+          </tr>
+        </tbody>
+      </table>
+      <input type='submit' value='Update'>
+    </form>
   </body>
 </html>

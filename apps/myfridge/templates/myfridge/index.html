@@ -3,6 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>My Fridge</title>
+    {%load staticfiles%}
+    <script src="{%static 'myfridge/css/jquery.min.js'%}"></script>
+    <script src="{%static 'myfridge/css/autocomplete.js'%}"></script>
   </head>
   <body>
     <h1>My Fridge</h1>
@@ -20,7 +23,11 @@
           <tbody>
             <tr>
               <td>Add ingredient:</td>
-              <td><input type='text' name='addingr'></td>
+              <td>
+                <input id="addingr" type='text' name='addingr'><br>
+                <div class='autocomplete'>
+                </div>
+              </td>
             </tr>
             <tr>
               <td>Quantity:</td>
@@ -46,14 +53,15 @@
         <tr>
           <td>{{ingredient.ingr_id.name}}</td>
           <td>{{ingredient.quantity}}</td>
-          <td>{{ingredient.created_at}}</td>
+          <td>{{ingredient.best_by|timeuntil}}</td>
           <td>Edit</td>
         </tr>
         {%endfor%}
       </tbody>
     </table>
+
     <ul>
-      <li><a href='#'>Edit quantity</a></li>
+      <li><a href="{%url 'myfridge:ingrdb'%}">Ingredient Database</a></li>
       <li><a href='#'>Home</a></li>
       <li><a href="{%url 'login:logout'%}">Log Out</a></li>
     </ul>

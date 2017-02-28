@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
+from django.core.urlresolvers import reverse
 from django.contrib import messages
 from .models import User
 
 # Create your views here.
 def index(request):
     if "id" in request.session:
-        return redirect('/success')
+        return redirect(reverse('myfridge:myfridge'))
     return render(request, 'login/index.html')
 
 def success(request):
@@ -16,7 +17,7 @@ def success(request):
     except User.DoesNotExist:
         messages.add_message(request, messages.INFO, "User not found.")
         return redirect('/')
-    return render(request, 'login/success.html', {"user":user})
+    return redirect(reverse('myfridge:myfridge'))
 
 def process(request):
     if request.method != 'POST':
@@ -25,7 +26,7 @@ def process(request):
         user_valid = User.objects.validate(request.POST)
         if user_valid[0] == True:
             request.session["id"] = user_valid[1].id
-            return redirect('/success')
+            return redirect(reverse('myfridge:myfridge'))
         else:
             for msg in user_valid[1]:
                 messages.add_message(request, messages.INFO, msg)
@@ -38,7 +39,7 @@ def login(request):
         user = User.objects.authenticate(request.POST)
         if user[0] == True:
             request.session["id"] = user[1].id
-            return redirect('/success')
+            return redirect(reverse('myfridge:myfridge'))
         else:
             messages.add_message(request, messages.INFO, user[1])
             return redirect('/')

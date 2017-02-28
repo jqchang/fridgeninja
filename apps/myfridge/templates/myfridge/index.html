@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>My Fridge</title>
+  </head>
+  <body>
+    <h1>My Fridge</h1>
+    <h3>Welcome, {{user.first_name}}</h3>
+    {%if messages%}
+    <ul>
+      {%for msg in messages%}
+      <li>{{msg|safe}}</li>
+      {%endfor%}
+    </ul>
+    {%endif%}
+    <table>
+      <thead>
+        <th>Ingredient:</th>
+        <th>Quantity:</th>
+        <th>Days left:</th>
+        <th>Actions:</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>INGR_NAME</td>
+          <td>INGR_QTY</td>
+          <td>INGR_TIME</td>
+          <td>Edit</td>
+        </tr>
+      </tbody>
+    </table>
+      <form action="{%url 'myfridge:addingr'%}" method='post'>
+      {%csrf_token%}
+      <table>
+          <tbody>
+            <tr>
+              <td>Add ingredient:</td>
+              <td><input type='text' name='addingr'></td>
+            </tr>
+            <tr>
+              <td>Quantity:</td>
+              <td><input type='text' name='quantity'></td>
+            </tr>
+            <tr>
+              <td>Best-by date (optional):</td>
+              <td><input type='text' name='bestby'></td>
+            </tr>
+          </tbody>
+      </table>
+      <input type='submit' value='Add'>
+    </form>
+    <ul>
+      <li><a href='#'>Edit quantity</a></li>
+      <li><a href='#'>Home</a></li>
+      <li><a href="{%url 'login:logout'%}">Log Out</a></li>
+    </ul>
+  </body>
+</html>
